@@ -1,5 +1,8 @@
 import Foundation
 import ChatBotSDK
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public final class Bot {
 
