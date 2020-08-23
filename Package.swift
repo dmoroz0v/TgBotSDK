@@ -11,7 +11,7 @@ let package = Package(
             targets: ["TgBotSDK"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/dmoroz0v/ChatBotSDK.git", .exact("0.0.2")),
+        .package(url: "https://github.com/dmoroz0v/ChatBotSDK.git", .exact("0.0.3")),
     ],
     targets: [
         .target(

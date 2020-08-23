@@ -11,18 +11,27 @@ public final class FlowStorageImpl: FlowStorage {
     let value = Expression<String>("value")
 
     public init() throws {
+        let fileExists = FileManager.default.fileExists(atPath: "db.sqlite3")
         db = try Connection("db.sqlite3")
 
-        _ = try? db.run(flows.create { t in
-            t.column(id, primaryKey: true)
-            t.column(value)
-        })
+        if !fileExists {
+            _ = try? db.run(flows.create { t in
+                t.column(id, primaryKey: true)
+                t.column(value)
+            })
+        }
     }
 
     public func save(value: String?, userId: Int64) {
         if let value = value {
-            let insert = flows.insert(self.value <- value, id <- userId)
-            _ = try? db.run(insert)
+            if hasRecord(userId: userId) {
+                let flow = flows.filter(id == userId)
+                let update = flow.update(self.value <- value)
+                _ = try? db.run(update)
+            } else {
+                let insert = flows.insert(self.value <- value, id <- userId)
+                _ = try? db.run(insert)
+            }
         } else {
             let flow = flows.filter(id == userId)
             _ = try? db.run(flow.delete())
@@ -37,5 +46,12 @@ public final class FlowStorageImpl: FlowStorage {
         return Array(result).first?[value]
     }
 
-}
+    public func hasRecord(userId: Int64) -> Bool {
+        let flow = flows.filter(id == userId)
+        guard let result = try? db.prepare(flow) else {
+            return false
+        }
+        return Array(result).count > 0
+    }
 
+}
