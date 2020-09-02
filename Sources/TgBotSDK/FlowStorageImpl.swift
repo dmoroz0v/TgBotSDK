@@ -11,8 +11,9 @@ public final class FlowStorageImpl: FlowStorage {
     let value = Expression<String>("value")
 
     public init() throws {
-        let fileExists = FileManager.default.fileExists(atPath: "db.sqlite3")
-        db = try Connection("db.sqlite3")
+        let url = URL(fileURLWithPath: "flow-storage-db.sqlite3")
+        let fileExists = FileManager.default.fileExists(atPath: url.path)
+        db = try Connection(url.path)
 
         if !fileExists {
             _ = try? db.run(flows.create { t in
