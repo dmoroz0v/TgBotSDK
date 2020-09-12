@@ -11,7 +11,7 @@ public final class FlowStorageImpl: FlowStorage {
     let value = Expression<String>("value")
 
     public init() throws {
-        let url = URL(fileURLWithPath: "flow-storage-db.sqlite3")
+        let url = URL(fileURLWithPath: ".flow-storage-db.sqlite3")
         let fileExists = FileManager.default.fileExists(atPath: url.path)
         db = try Connection(url.path)
 
